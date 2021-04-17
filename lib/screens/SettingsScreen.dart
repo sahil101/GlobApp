@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:globapp/data/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -15,6 +16,20 @@ class _SettingScreenState extends State<SettingScreen> {
     0xffd700d2,
     0xff0082d2
   ];
+  SPSettings settings;
+
+  @override
+  void initState() {
+    settings = SPSettings();
+    settings.init().then((value) {
+      setState(() {
+        settingColor = settings.getColor();
+        fontsize = settings.getfont();
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +42,7 @@ class _SettingScreenState extends State<SettingScreen> {
           children: <Widget>[
             Text(
               "Choose Color",
-              style: TextStyle(fontSize: 40),
+              style: TextStyle(fontSize: fontsize),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -54,13 +69,47 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
               ],
             ),
+            Text("Choose Font Size"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () => setfontSize(10),
+                  child: Text("very small"),
+                ),
+                GestureDetector(
+                  onTap: () => setfontSize(16),
+                  child: Text("small"),
+                ),
+                GestureDetector(
+                  onTap: () => setfontSize(30),
+                  child: Text("medium"),
+                ),
+                GestureDetector(
+                  onTap: () => setfontSize(40),
+                  child: Text("large"),
+                ),
+                GestureDetector(
+                  onTap: () => setfontSize(50),
+                  child: Text("very large"),
+                ),
+              ],
+            ),
           ]),
     );
+  }
+
+  void setfontSize(double fontSize) {
+    setState(() {
+      fontsize = fontSize;
+      settings.setfont(fontSize);
+    });
   }
 
   void setcolor(int color) {
     setState(() {
       settingColor = color;
+      settings.setColor(color);
     });
   }
 }
